@@ -24,8 +24,8 @@ class CreateAccount(IsAnonymous, View):
     def __init__(self):
         self.form = UserCreateForm()
 
-    def get(self, request):
-        return render(request, self.template_name, {'user_create_form': self.form})
+    def get(self, request, error=None):
+        return render(request, self.template_name, {'user_create_form': self.form, 'error': error})
 
     def post(self, request):
         form = UserCreateForm(request.POST)
@@ -38,8 +38,8 @@ class CreateAccount(IsAnonymous, View):
                 login(request, user=user)
             else:
                 raise ValidationError(
-                    message='Validation Fail',
-                    code='validation_fail',
+                    message='Login Fail',
+                    code='login_fail',
                 )
             return HttpResponseRedirect(reverse('general:home'))
         return self.get(request)

@@ -9,6 +9,9 @@
     <div class="box column is-4 is-offset-4" style="margin-top:5%" >
         <form action="{% url "account:create_account" %}" method="post" accept-charset="utf-8">
             <div class="has-text-danger">
+                {% if error %}
+                    {{ error }}
+                {% endif %}
                 {{ form.non_field_errors }}
             </div> </br>
             {% include "form_template.html" with form=user_create_form %}

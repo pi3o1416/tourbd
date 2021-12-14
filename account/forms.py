@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import password_validation
 from django.contrib.postgres.forms import SimpleArrayField
 from django.core.exceptions import ValidationError
+from django.utils.timezone import datetime
 from .models import CustomUser
 
 
@@ -13,6 +14,7 @@ class UserCreateForm(forms.ModelForm):
     """
     error_messages = {
         'password_mismatch': _('The two password fields didn’t match.'),
+        'under_age': _('User should be at least 14 years old'),
     }
     password1 = forms.CharField(
         label=_("Password"),
@@ -50,11 +52,22 @@ class UserCreateForm(forms.ModelForm):
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
-            raise ValidationError(
+            raise forms.ValidationError(
                 self.error_messages['password_mismatch'],
                 code='password_mismatch',
             )
         return password2
+
+    def clean_date_of_birth(self):
+        today = datetime.today()
+        date_of_birth = self.cleaned_data.get('date_of_birth')
+        age = int((today.date() - date_of_birth).days / 365)
+        if age < 15:
+            raise forms.ValidationError(
+                self.error_messages['under_age'],
+                code='under_age',
+            )
+
 
     def save(self, commit=True):
         user = super().save(commit=False)
