@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'account.apps.AccountConfig',
+    'general.apps.GeneralConfig',
 ]
 
 MIDDLEWARE = [
@@ -136,3 +137,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # My settings
 AUTH_USER_MODEL = 'account.CustomUser'
+STATIC_URL = '/static/'
+LOGIN_REDIRECT_URL = 'general:home'
+LOGIN_URL = 'account:login'
+#LOGOUT_URL = 'logout'
+
+#Custom Authentication
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
