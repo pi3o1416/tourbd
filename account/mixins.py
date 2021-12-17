@@ -1,6 +1,8 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.urls import reverse
 from django.http import HttpResponseRedirect
+from django.shortcuts import render
+from django.contrib import messages
 
 class IsAnonymous(UserPassesTestMixin):
 
@@ -9,4 +11,5 @@ class IsAnonymous(UserPassesTestMixin):
 
     def handle_no_permission(self):
         return HttpResponseRedirect(reverse('general:home'))
+
 

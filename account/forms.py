@@ -3,7 +3,6 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import password_validation
 from django.contrib.postgres.forms import SimpleArrayField
-from django.core.exceptions import ValidationError
 from django.utils.timezone import datetime
 from .models import CustomUser
 
@@ -35,18 +34,19 @@ class UserCreateForm(forms.ModelForm):
         label=_("Username/Email"),
     )
 
-    date_of_birth = forms.DateField(widget=forms.DateInput(attrs={'type' : 'date'}))
+    date_of_birth = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}))
 
     interest = SimpleArrayField(
         forms.CharField(
             max_length=30,
         ),
-        help_text = _('Places you are interested in. comma seperated')
+        help_text=_('Places you are interested in. comma seperated')
     )
 
     class Meta:
         model = CustomUser
-        fields = ('username','email', 'date_of_birth', 'interest')
+        fields = ('username', 'email', 'date_of_birth', 'interest')
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
@@ -61,13 +61,14 @@ class UserCreateForm(forms.ModelForm):
     def clean_date_of_birth(self):
         today = datetime.today()
         date_of_birth = self.cleaned_data.get('date_of_birth')
-        age = int((today.date() - date_of_birth).days / 365)
-        if age < 15:
-            raise forms.ValidationError(
-                self.error_messages['under_age'],
-                code='under_age',
-            )
-
+        if date_of_birth:
+            age = int((today.date() - date_of_birth).days / 365)
+            if age < 15:
+                raise forms.ValidationError(
+                    self.error_messages['under_age'],
+                    code='under_age',
+                )
+        return date_of_birth
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -77,5 +78,41 @@ class UserCreateForm(forms.ModelForm):
         return user
 
 
+class UserEditForm(forms.ModelForm):
+    username = forms.CharField(
+        max_length=50,
+        min_length=3,
+        label=_("Username"),
+    )
 
+    date_of_birth = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}))
+
+    interest = SimpleArrayField(
+        forms.CharField(
+            max_length=30,
+        ),
+        help_text=_('Places you are interested in. comma seperated')
+    )
+    password = forms.CharField(
+        label=_("Password"),
+        strip=False,
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+    )
+
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'email', 'date_of_birth', 'interest']
+
+    def clean_date_of_birth(self):
+        today = datetime.today()
+        date_of_birth = self.cleaned_data.get('date_of_birth')
+        if date_of_birth:
+            age = int((today.date() - date_of_birth).days / 365)
+            if age < 15:
+                raise forms.ValidationError(
+                    message="User Under Aged",
+                    code='under_age',
+                )
+        return date_of_birth
 

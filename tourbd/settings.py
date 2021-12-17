@@ -37,8 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.messages',
     'account.apps.AccountConfig',
     'general.apps.GeneralConfig',
 ]
@@ -146,4 +146,24 @@ LOGIN_URL = 'account:login'
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+#Django message api
+MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
+
+#Django email
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

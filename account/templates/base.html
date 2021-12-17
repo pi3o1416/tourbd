@@ -38,6 +38,21 @@
                     </div>
                     <div class="navbar-end">
                         {% if user.is_authenticated %}
+
+                            <div class="navbar-item has-dropdown is-hoverable">
+                                <p class="navbar-link">
+                                    {{ user.username }}
+                                </p>
+
+                                <div class="navbar-dropdown">
+                                    <a class="navbar-item" href="{% url "account:edit_profile" %}">
+                                        Edit Profile
+                                    </a>
+                                    <a class="navbar-item" href="{% url "account:password_change" %}">
+                                        Change Password
+                                    </a>
+                                </div>
+                            </div>
                             <a class="navbar-item" href="{% url "account:logout" %}"><p class="button">Logout</p></a>
                         {% else %}
                             <a class="navbar-item" href="{% url "account:login" %}"><p class="button">Login</p></a>
