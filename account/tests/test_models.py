@@ -6,9 +6,8 @@ from account.models import CustomUser
 
 
 class CustomUserModelTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        CustomUser.objects.create(
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(
             username='bob',
             first_name='bob',
             last_name='marley',
@@ -18,7 +17,7 @@ class CustomUserModelTest(TestCase):
         )
 
     def test_date_of_birth_label(self):
-        user = CustomUser.objects.get(id=1)
+        user = CustomUser.objects.get(username='bob')
         field_label = user._meta.get_field('date_of_birth').verbose_name
         self.assertEqual(field_label, 'Date of Birth')
 

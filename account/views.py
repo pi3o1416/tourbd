@@ -74,7 +74,7 @@ class CreateAccount(IsAnonymous, View):
                     code='login_fail',
                 )
             return HttpResponseRedirect(reverse('general:home'))
-        return HttpResponse(reverse('account:create_account'))
+        return render(request, self.template_name, {'user_create_form': form})
 
 
 class UpdateProfile(LoginRequiredMixin, View):
@@ -85,9 +85,9 @@ class UpdateProfile(LoginRequiredMixin, View):
     def get(self, request):
         try:
             user = self.User.objects.get(username=request.user.username)
-            self.form = UserEditForm(instance=user)
-#            self.form = self.form(instance=user)
-            return render(request, self.template_name, {'user_edit_form': self.form})
+            form = UserEditForm(instance=user)
+#            form = self.form(instance=user)
+            return render(request, self.template_name, {'user_edit_form': form})
         except self.User.DoesNotExist:
             return HttpResponseNotFound(render(request, 'does_not_exist.html'))
 
@@ -103,11 +103,10 @@ class UpdateProfile(LoginRequiredMixin, View):
                     messages.success(request, 'Successfully update Profile')
                     return HttpResponseRedirect(reverse('account:edit_profile'))
                 else:
-                    messages.error(request, 'Incorrect Password')
                     messages.error(request, 'Failed to update Profile')
-                    return HttpResponseRedirect(reverse('account:edit_profile'))
+                    return render(request, self.template_name, {'user_edit_form': form})
             else:
                 messages.error(request, "Failed to Update Profile")
-                return HttpResponseRedirect(reverse('account:edit_profile'))
+                return render(request, self.template_name, {'user_edit_form': form})
         except self.User.DoesNotExist:
             return HttpResponseNotFound(render(request, 'does_not_exist.html'))
