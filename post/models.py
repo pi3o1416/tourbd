@@ -24,6 +24,7 @@ class Post(models.Model):
         verbose_name=_('Post Submitted'), auto_now_add=True)
     slug = models.SlugField(max_length=200, blank=True)
     body = models.TextField(verbose_name='Post body')
+    district = models.CharField(_('District Name'), max_length=100, blank=True)
 
     def __str__(self):
         return self.title

@@ -26,6 +26,11 @@ class TestPost(TestCase):
         self.assertEqual(self.post._meta.get_field(
             'body').verbose_name, 'Post body')
 
+
+    def test_district_label(self):
+        self.assertEqual(self.post._meta.get_field(
+            'district').verbose_name, 'District Name')
+
     def test_title_label(self):
         self.assertEqual(self.post._meta.get_field(
             'title').verbose_name, 'Head line')
@@ -42,6 +47,9 @@ class TestPost(TestCase):
 
     def test_post_title_max_length(self):
         self.assertTrue(self.post._meta.get_field('title').max_length == 200)
+
+    def test_district_max_length(self):
+        self.assertTrue(self.post._meta.get_field('district').max_length == 100)
 
     def test_post_date_auto_now_add(self):
         self.assertTrue(self.post._meta.get_field(
