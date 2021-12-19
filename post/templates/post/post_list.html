@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load mytags %}
+
+{% block title %}
+    Blog
+{% endblock title %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="is-size-2 has-text-primary">Blog</h1>
+        <div class="columns" style="margin-top:3%">
+            <div class="column">
+            </div>
+            <div class="box column is-half">
+                {% if posts %}
+                    {% for post in posts %}
+                        <div>
+                            <h1 class="is-size-3 has-text-primary-dark">{{ post.title }}</h1>
+                        </div>
+                        <p>
+                            <strong>{{ post.author.username }}</strong><br>
+                            <span class="has-text-grey">
+                            {{ post.post_date }}
+                            </span>
+                        </p>
+                        <img src=" {{ post.image.url }}" alt=""/>
+                        <div class="box has-text-black-bis is-size-6">
+                            {{ post.body|limit_letter:200 }}
+                        </div>
+                        <div class="buttons">
+                            <button class="button is-info is-fullwidth">Like</button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="column"> </div>
+        </div>
+    </div>
+{% endblock body %}
