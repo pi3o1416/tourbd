@@ -141,7 +141,7 @@ AUTH_USER_MODEL = 'account.CustomUser'
 STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = 'general:home'
 LOGIN_URL = 'account:login'
-#LOGOUT_URL = 'logout'
+LOGOUT_URL = 'account:logout'
 
 #Custom Authentication
 AUTHENTICATION_BACKENDS = [
@@ -153,6 +153,12 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 
 #Django email
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+#media
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+
 
 
 
