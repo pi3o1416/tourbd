@@ -39,3 +39,15 @@ class CustomUser(AbstractUser):
         size=4,
         default=list,
     )
+    class Meta:
+        permissions = [
+            ('can_create_post', 'Can create post'),
+            ('can_delete_post', 'Can delete post'),
+            ('can_update_post', 'Can update post'),
+            ('can_view_post', 'Can view post'),
+        ]
+
+
+
+
+
