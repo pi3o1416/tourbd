@@ -5,8 +5,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.auth import get_user_model
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from .models import Post
-from .forms import FilterForm, PostCreateForm
+from .models import Post, Like, Comment
+from .forms import FilterForm, PostCreateForm, CommentForm
 from .mixins import MyPermissionRequiredMixin
 
 
@@ -45,24 +45,37 @@ class PostList(View):
 class AuthorPosts(View):
     template_name = 'post/author_posts.html'
     author_model = get_user_model()
+
     def get(self, request, username):
         try:
             user = self.author_model.objects.get(username=username)
-            query_set = Post.objects.filter(author__username = username)
+            query_set = Post.objects.filter(author__username=username)
             return render(request, self.template_name, {'posts': query_set, 'author': user})
         except self.author_model.DoesNotExist:
             return render(request, 'does_not_exist.html')
 
 
 class PostDetail(View):
+    form = CommentForm
     template_name = 'post/post_detail.html'
 
     def get(self, request, pk):
+        form = self.form()
         post = Post.objects.get(pk=pk)
-        return render(request, self.template_name, {'post': post})
+        return render(request, self.template_name, {'post': post, 'form': form})
 
-    def post(self, request):
-        pass
+    def post(self, request, pk):
+        form = self.form(request.POST)
+        post = Post.objects.get(pk=pk)
+        if form.is_valid():
+            newform = form.save(commit=False)
+            newform.user = request.user
+            newform.post = post
+            newform.save()
+            return HttpResponseRedirect(reverse('post:post_detail', kwargs={'pk': post.pk}))
+        else:
+            return render(request, self.template_name, {'post': post, 'form': form})
+
 
 class CreatePost(LoginRequiredMixin, MyPermissionRequiredMixin, View):
     permission_required = ('post.add_post',)
@@ -122,3 +135,17 @@ class EditPost(LoginRequiredMixin, View):
             return HttpResponseRedirect(reverse('post:post_detail', kwargs={'pk': post.pk}))
         else:
             return render(request, self.template_name, {'form': form, 'post': post})
+
+
+class LikePost(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        try:
+            user = request.user
+            post = Post.objects.get(pk=pk)
+            like = Like(user=user, post=post)
+            like.save()
+            return HttpResponseRedirect(reverse('post:post_list'))
+        except Post.DoesNotExist:
+            return render(request, 'does_not_exist.html')
+        except:
+            return HttpResponseRedirect(reverse('post:post_list'))

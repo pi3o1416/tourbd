@@ -3,7 +3,7 @@ from django import forms
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
-from .models import Post
+from .models import Post, Comment
 
 
 User = get_user_model()
@@ -74,3 +74,8 @@ class PostCreateForm(forms.ModelForm):
         fields=('title', 'district', 'image', 'body')
 
 
+class CommentForm(forms.ModelForm):
+    comment_text = forms.CharField(label=_('Add comment'),max_length=500)
+    class Meta:
+        model=Comment
+        fields = ('comment_text',)

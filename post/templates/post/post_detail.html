@@ -14,6 +14,25 @@
         <p class="has-text-black-bis is-size-6">
             {{ post.body }}
         </p>
+        <div class="mt-6">
+            <h1 class="is-size-5"><strong>Comments:</strong></h1>
+            <div class="mt-2"> </div>
+            <form action="{% url "post:post_detail" post.pk %}" method="post" accept-charset="utf-8">
+                {% include "form_template.html" with form=form %}
+                {% csrf_token %}
+                <button class="button is-link">Submit</button>
+            </form>
+            {% for comment in post.post_comments.all %}
+                <div class="box">
+                    <strong>{{ comment.user.username }}</strong>
+                    {{ comment.comment_time }}
+                    <div class="ml-5 mt-2 has-text-black-bis	">
+                        {{ comment.comment_text }}
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
     </div>
 {% endblock body %}
 

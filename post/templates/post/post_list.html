@@ -35,15 +35,19 @@
                         <div class="box has-text-black-bis is-size-6">
                             {{ post.body|limit_letter:200 }}
                         </div>
-                        <div class="buttons">
-                            <button class="button is-info is-fullwidth">Like</button>
-                        </div>
+                        <a href="{% url "post:like_post" post.pk %}">
+                            <div class="buttons">
+                                <button class="button is-info is-fullwidth">
+                                    Like|Total like{{ post.post_likes.all|length|pluralize:"s" }}: {{ post.post_likes.all|length }}
+                                </button>
+                            </div>
+                        </a>
                     {% endfor %}
                 {% endif %}
             </div>
-            <div class="column"> 
+            <div class="column">
                 {% if user.is_authenticated %}
-                <a href="{% url "post:create_post" %}"><p class="button is-primary is-fullwidth">Create Post</p></a>
+                    <a href="{% url "post:create_post" %}"><p class="button is-primary is-fullwidth">Create Post</p></a>
                 {% endif %}
             </div>
         </div>
