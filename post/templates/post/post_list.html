@@ -9,18 +9,26 @@
     <div class="container">
         <h1 class="is-size-2 has-text-primary">Blog</h1>
         <div class="columns" style="margin-top:3%">
-            <div class="column">
+            <div class="column box">
+                <h1 class="is-size-4" style="margin-bottom:2%"><strong>Filter</strong></h1>
+                <form action="{% url "post:post_list" %}" method="post" accept-charset="utf-8">
+                    {% include "form_template.html" with form=form %}
+                    {% csrf_token %}
+                    <button class="button is-primary">Submit</button>
+                </form>
             </div>
             <div class="box column is-half">
                 {% if posts %}
                     {% for post in posts %}
                         <div>
-                            <h1 class="is-size-3 has-text-primary-dark">{{ post.title }}</h1>
+                            <a href="{% url "post:post_detail" post.pk %}">
+                                <h1 class="is-size-3 has-text-primary-dark">{{ post.title }}</h1>
+                            </a>
                         </div>
                         <p>
                             <strong>{{ post.author.username }}</strong><br>
                             <span class="has-text-grey">
-                            {{ post.post_date }}
+                                {{ post.post_date }}
                             </span>
                         </p>
                         <img src=" {{ post.image.url }}" alt=""/>

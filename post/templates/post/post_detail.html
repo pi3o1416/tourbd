@@ -1,0 +1,19 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+    {{ post.title }}
+{% endblock title %}
+
+{% block body %}
+    <div class="container column is-four-fifths ">
+        <img class="is-narrow-widescreen" src="{{ post.image.url }}" alt="Post Image" height="40" />
+        <h1 class="is-size-2 has-text-info-dark" style="margin-top:3%">{{ post.title }}</h1>
+        <p><span class="is-size-5"><strong>{{ post.author.username }}</strong></span>  <span class="has-text-gray">{{ post.post_date }}</span></p>
+        <br>
+        <p class="has-text-black-bis is-size-6">
+            {{ post.body }}
+        </p>
+    </div>
+{% endblock body %}
+
