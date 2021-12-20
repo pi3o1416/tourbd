@@ -16,7 +16,7 @@
                     </div>
                     <div class="navbar-start">
                         {% if user.is_authenticated %}
-                            <a class="navbar-item has-text-info" href="#">My Posts</a>
+                            <a class="navbar-item has-text-info" href="{% url "post:author_posts" user.username %}">My Posts</a>
                         {% endif %}
                         <a class="navbar-item has-text-info" href="{% url "post:post_list" %}">Blog</a>
                         <a class="navbar-item has-text-info" href="#">Q&A</a>
