@@ -1,0 +1,15 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+    Delete post
+{% endblock title %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="is-size-2">Confirm Deletion</h1>
+        <p class="is-size-5">Do you Realy want to delete <a href="{% url "post:post_detail" post.pk %}"><strong>"{{ post.title }}"</strong></a></p>
+        <a href="{% url "post:delete_post_complete" post.pk %}"><p class="button">Yes</p></a>
+        <a href="{% url "post:author_posts" user.username %}"><p class="button">No</p></a>
+    </div>
+{% endblock body %}

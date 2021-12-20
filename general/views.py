@@ -8,3 +8,10 @@ class HomePage(View):
 
     def get(self, request):
         return render(request, self.template_name)
+
+
+class NoPermission(View):
+    template_name = 'general/no_permission.html'
+
+    def get(self, request):
+        return render(request, self.template_name)

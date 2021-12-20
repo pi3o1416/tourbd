@@ -1,11 +1,13 @@
 
 from django.shortcuts import render
 from django.views import View
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth import get_user_model
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .models import Post
 from .forms import FilterForm, PostCreateForm
+from .mixins import MyPermissionRequiredMixin
 
 
 class PostList(View):
@@ -40,12 +42,16 @@ class PostList(View):
             return render(request, self.template_name, {'posts': self.query_set, 'form': form})
 
 
-class AuthorDetail(View):
-    def get(self, request):
-        pass
-
-    def post(self, request):
-        pass
+class AuthorPosts(View):
+    template_name = 'post/author_posts.html'
+    author_model = get_user_model()
+    def get(self, request, username):
+        try:
+            user = self.author_model.objects.get(username=username)
+            query_set = Post.objects.filter(author__username = username)
+            return render(request, self.template_name, {'posts': query_set, 'author': user})
+        except self.author_model.DoesNotExist:
+            return render(request, 'does_not_exist.html')
 
 
 class PostDetail(View):
@@ -58,8 +64,8 @@ class PostDetail(View):
     def post(self, request):
         pass
 
-
-class CreatePost(LoginRequiredMixin, View):
+class CreatePost(LoginRequiredMixin, MyPermissionRequiredMixin, View):
+    permission_required = ('post.add_post',)
     template_name = 'post/create_post.html'
     form = PostCreateForm
 
@@ -78,22 +84,41 @@ class CreatePost(LoginRequiredMixin, View):
             return render(request, self.template_name, {'form': form})
 
 
-
 class DeletePost(LoginRequiredMixin, View):
     template_name = 'post/delete_post.html'
 
-    def get(self):
-        pass
+    def get(self, request, pk):
+        try:
+            post = Post.objects.get(pk=pk)
+            return render(request, self.template_name, {'post': post})
+        except Post.DoesNotExist:
+            return render(request, 'does_not_exist.html')
 
-    def post(self):
-        pass
+
+class DeletePostComplete(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        try:
+            post = Post.objects.get(pk=pk)
+            post.delete()
+            return HttpResponseRedirect(reverse('post:author_posts', kwargs={'username': post.author.username}))
+        except Post.DoesNotExist:
+            return render(request, 'does_not_exist.html')
 
 
 class EditPost(LoginRequiredMixin, View):
+    form = PostCreateForm
     template_name = 'post/edit_post.html'
 
-    def get(self):
-        pass
+    def get(self, request, pk):
+        post = Post.objects.get(pk=pk)
+        form = self.form(instance=post)
+        return render(request, self.template_name, {'form': form, 'post': post})
 
-    def post(self):
-        pass
+    def post(self, request, pk):
+        post = Post.objects.get(pk=pk)
+        form = self.form(instance=post, data=request.POST, files=request.FILES)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('post:post_detail', kwargs={'pk': post.pk}))
+        else:
+            return render(request, self.template_name, {'form': form, 'post': post})

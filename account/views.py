@@ -2,10 +2,11 @@ from django.shortcuts import render
 from django.views import View
 from django.urls import reverse, reverse_lazy
 from django.core.exceptions import ValidationError
-from django.http import HttpResponseRedirect, HttpResponseNotFound, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.contrib.auth import login, authenticate, views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.contrib import messages
 from .forms import UserCreateForm, UserEditForm
 from .mixins import IsAnonymous
@@ -63,6 +64,9 @@ class CreateAccount(IsAnonymous, View):
 #        form = self.form(request.POST)
         if form.is_valid():
             user = form.save()
+            group = Group.objects.get(name='general_user')
+            user.groups.add(group)
+            user.save()
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password2')
             user = authenticate(username=username, password=password)

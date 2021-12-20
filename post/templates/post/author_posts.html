@@ -1,0 +1,44 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+    Author Posts
+{% endblock title %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="is-size-2 has-text-primary">Author Detail</h1>
+        <div class="columns" style="margin-top:3%">
+            <div class="column"> </div>
+            <div class="box column is-half">
+                <p class="is-size-5"><strong>Username: </strong> {{ author.username }} </p>
+                <p class="is-size-5"><strong>Total Post: </strong> {{ posts|length }} </p> <br>
+                {% if posts %}
+                    {% for post in posts %}
+                        <div>
+                            <img src=" {{ post.image.url }}" alt="" width="150px"/>
+                            <a href="{% url "post:post_detail" post.pk %}">
+                                <h1 class="is-size-3 has-text-primary-dark">{{ post.title }}</h1>
+                            </a>
+                        </div>
+                        <p>
+                            <span class="has-text-grey">
+                                {{ post.post_date }}
+                            </span>
+                        </p>
+                        {% if user.is_authenticated %}
+                            {% if user.username == author.username %}
+                                <a href="{% url "post:delete_post" post.pk %}"><p class="button is-danger">Delete This Post</p></a>
+                                <a href="{% url "post:edit_post" post.pk %}"><p class="button is-link">Edit This Post</p></a>
+                            {% endif %}
+                        {% endif %}
+                        <br></br>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="column"> 
+                <a href="{% url "post:create_post" %}"><p class="button is-primary">Create Post</p></a>
+            </div>
+        </div>
+    </div>
+{% endblock body %}

@@ -45,6 +45,7 @@ class CustomUser(AbstractUser):
             ('can_delete_post', 'Can delete post'),
             ('can_update_post', 'Can update post'),
             ('can_view_post', 'Can view post'),
+            ('can_create_comment', 'Can create comment'),
         ]
 
 
