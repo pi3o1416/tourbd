@@ -4,6 +4,7 @@ from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import slugify
+from django.urls import reverse
 
 
 def create_path(instance, filename):
@@ -32,6 +33,9 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return reverse('post:post_detail', kwargs={'pk':self.pk})
+
     def get_upload_to(self):
         return 'photos/%d' % self.pk
 
@@ -46,9 +50,6 @@ class Post(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
-
-    def get_absolute_url(self):
-        pass
 
 
 class Like(models.Model):

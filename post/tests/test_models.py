@@ -56,7 +56,13 @@ class TestPost(TestCase):
             'post_date').auto_now_add == True)
 
     def test_get_absolute_url(self):
-        self.assertFalse(True)
+        self.assertEqual(self.post.get_absolute_url(), '/blog/post/{}/'.format(self.post.pk))
+
+    def test_get_upload_to(self):
+        self.assertEqual(self.post.get_upload_to(), 'photos/{}'.format(self.post.pk))
+
+
+
 
 
 
